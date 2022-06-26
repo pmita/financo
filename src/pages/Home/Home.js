@@ -1,4 +1,5 @@
 import React from 'react';
+// eslint-disable-next-line no-unused-vars
 import styles from './Home.module.css';
 
 const Home = () => {
