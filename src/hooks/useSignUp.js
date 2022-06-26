@@ -1,11 +1,14 @@
 import { useState } from 'react';
 //FIREBASE
 import { projectAuth } from '../firebase/config';
+//HOOKS
+import { useAuthContext } from '../hooks/useAuthContext';
 
 export const useSignUp = () => {
     //STATE & VARIABLES
     const [error, setError] = useState(null);
     const [isPending, setIsPending] = useState(null);
+    const { dispatch } = useAuthContext();
 
     //FUNCTIONS
     const signup = async (email, password, displayName) => {
@@ -14,28 +17,23 @@ export const useSignUp = () => {
         setIsPending(true)
 
         try{
-            //init request in a try-catch block since its an async request
-            //createUser method returns us a response
-            //response contains details about the user we just created
            const response = await projectAuth.createUserWithEmailAndPassword(email, password);
-           console.log(response);
 
-           //if we don't get a response, our request has failed
            if(!response){
             throw new Error('Could not compolete sign up');
            }
 
-           //If we reach this line, user has signup successfully
-           //we can now update the user name
            await response.user.updateProfile({
             displayName: displayName
            });
+
+           //dispatch login action!!
+            dispatch({ type: 'LOGIN', payload: response.user})
 
            //reset state after success
            setIsPending(false);
            setError(null);
         }catch(err){
-            //If our request fails, collect the reason why
             setError(err.message);
             setIsPending(false);
             console.log(err.message);
