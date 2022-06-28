@@ -6,7 +6,7 @@ import { useAuthContext } from './useAuthContext';
 
 export const useLogOut = () => {
     //STATE & VARIABLES
-    const [isCancelled, setIsCancelled] = useState(false);
+    const [isCancelled, setIsCancelled] = useState(null);
     const [error, setError] = useState(null);
     const [isPending, setIsPending] = useState(false);
     const { dispatch } = useAuthContext();
@@ -36,8 +36,13 @@ export const useLogOut = () => {
     }
 
     useEffect(() => {
-        //return a clean up function
-        return () => setIsCancelled(true);
+        //Need to set the state to false withing useEffect
+        //else clean up function runs immediatelly - React V18
+        setIsCancelled(false);
+
+        return () => {
+            setIsCancelled(true)
+        }
     }, []);
 
     //RETURN

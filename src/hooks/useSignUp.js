@@ -6,7 +6,7 @@ import { useAuthContext } from '../hooks/useAuthContext';
 
 export const useSignUp = () => {
     //STATE & VARIABLES
-    const [isCancelled, setIsCancelled] = useState(false);
+    const [isCancelled, setIsCancelled] = useState(null);
     const [error, setError] = useState(null);
     const [isPending, setIsPending] = useState(null);
     const { dispatch } = useAuthContext();
@@ -45,7 +45,10 @@ export const useSignUp = () => {
     }
 
     useEffect(() => {
-        //return a clean up function
+        //Need to set the state to false withing useEffect
+        //else clean up function runs immediatelly - React V18
+        setIsCancelled(false);
+
         return () => setIsCancelled(true);
     }, []);
 
